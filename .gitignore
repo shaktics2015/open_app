@@ -25,6 +25,7 @@ $RECYCLE.BIN/
 *.msp
 api_server_open_app/node_modules/
 tcp_server_open_app/node_modules/
+http_server_open_app/node_modules/
 # Windows shortcuts
 *.lnk
 

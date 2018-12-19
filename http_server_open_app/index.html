@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+    <head>
+
+    </head>
+    <body>
+        <h1>Hello World!</h1>
+        <table style="width: 100%" id="myTable">
+            <tbody>
+            <tr><td></td><td></td><td></td><td></td><td></td></tr>
+            </tbody>
+        </table>
+        <div id="future"></div>
+        <form id="form" id="chat_form">
+            <input id="chat_input" type="text">
+            <input type="submit" value="Send">
+        </form>
+        <script src="http://192.168.43.12:8080/jquery/dist/jquery.js"></script>
+        <script src="http://192.168.43.12:8080/socket.io/socket.io.js"></script>
+        <script>
+
+
+            $( document ).ready(function() {
+
+                var socket = io.connect('http://192.168.43.12:8080');
+ var userdata= {
+     'userid':101,
+     'username': 'SHAKTI'
+ };
+ socket.on('connect', function(data) {
+
+    socket.emit('join', userdata);
+
+ socket.on('disconnect', function () {
+    var userdata= {
+	'userid':101,
+	'username': 'SHAKTI'
+	};
+    socket.emit('leave', userdata);
+  });
+ });
+ socket.on('broad', function(data) {
+     console.log('broad data ', data.user.userid);
+     console.log('sender data ',userdata.userid);
+     if(userdata.userid == data.user.userid){
+         $('#myTable tr:last').after('<tr style="color: yellow; background-color: black;"><td></td><td></td><td></td><td></td><td>'+data.message+'</td><td>'+data.user.username+'</td></tr>');
+     }else{
+         $('#myTable tr:last').after('<tr style="color: black; background-color: yellow;"><td>'+data.user.username+'</td><td>'+data.message+'</td><td></td><td></td><td></td></tr>');
+     }
+   });
+
+ $('form').submit(function(e){
+     e.preventDefault();
+     var message = $('#chat_input').val();
+     var object ={
+         'to':102,
+         'user': userdata,
+         'message': message
+     };
+     $('#myTable tr:last').after('<tr style="color: yellow; background-color: black;"><td></td><td></td><td></td><td></td><td>'+object.message+'</td><td>'+object.user.username+'</td></tr>');
+     socket.emit('messages', object);
+ });
+ });
+</script>  
+    </body>
+</html>  
